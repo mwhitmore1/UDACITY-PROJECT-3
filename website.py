@@ -63,9 +63,11 @@ def showProfile(user_id):
         user = session.query(User).filter_by(id=user_id).one()
         posts = session.query(Posts).filter_by(user_id=user_id)
         pictures = session.query(Pictures).filter_by(user_id=user_id)
+        connections = session.query(Connections, User).filter(Connections.user_id==user_id, User.id==Connections.connected_to)
         return render_template('profile.html',
                                user=user,
                                posts=posts,
+                               connections=connections,
                                pictures=pictures)
 
 if __name__ == '__main__':
