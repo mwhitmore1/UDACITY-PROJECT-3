@@ -3,8 +3,10 @@
 	<head>
 	</head>
 	<body>
+		<div>
+			<img src={{url_for('static', filename=user.profile_pic)}} width=200 height=200>
 		{{user.username}} </br>
-		{{user.profile_pic}} </br>
+		</div>
 		{{user.description}} </br>
 		</br>
 		{% for i in posts %}

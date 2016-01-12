@@ -12,13 +12,28 @@ DBSession = sessionmaker(bind=engine)
 session = DBSession()
 
 newUser = User(email='ninja@ninja.com',
-               profile_pic='url will go here')
+               profile_pic='ninja.png',
+               username='ninja',
+               description='''This is a description text block.
+               This is a description text block.
+               This is a description text block.
+               This is a description text block.
+               This is a description text block.
+               This is a description text block.
+               This is a description text block.  ''')
 session.add(newUser)
 session.commit()
 
 newPost = Posts(post_time=time.ctime(),
+                user_id=1,
                 subject='This is the subject',
-                description='This is the description')
+                description='''This is a description text block.
+               This is a description text block.
+               This is a description text block.
+               This is a description text block.
+               This is a description text block.
+               This is a description text block.
+               This is a description text block.  ''')
 session.add(newPost)
 session.commit()
 
@@ -26,13 +41,15 @@ session.commit()
 users = session.query(User).all()
 for user in users:
     print 'id: ',user.id
+    print 'username: ', user.username
+    print 'description: ', user.description
     print 'email: ',user.email
     print 'pic: ',user.profile_pic
     print ''
 
 posts = session.query(Posts).all()
 for post in posts:
-    print 'post id: 'post.id
+    print 'post id: ', post.id
     print 'post time: ', post.post_time
     print 'post subject: ', post.subject
     print 'post description: ', post.description
