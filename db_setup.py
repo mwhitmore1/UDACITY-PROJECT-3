@@ -47,9 +47,9 @@ class Connections(Base):
 
     id = Column(Integer, primary_key=True)
     user_id = Column(Integer, ForeignKey('user.id'))
-    u_id = relationship(User)
+    u_id = relationship('User', foreign_keys=[user_id])
     connected_to = Column(Integer, ForeignKey('user.id'))
-    c_to = relationship(User)
+    c_to = relationship('User', foreign_keys=[connected_to])
 
 
 engine = create_engine('sqlite:///ninja.db')
