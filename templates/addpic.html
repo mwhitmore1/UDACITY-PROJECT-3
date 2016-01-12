@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+	<head>
+	</head>
+	<body>
+		<div>
+			<img src={{url_for('static', filename=picture.location)}} height=300, width=300>
+			<div>
+				Add a Description
+				<form action='' method='POST' enctype='multipart/form-data'>
+					<textarea type='text' name='picdes' style="height:200px; width:200px"></textarea>
+					</br>
+					<input type='submit' value='Submit'>
+				</form>
+			</div>
+		</div>
+	</body>
+</html>

@@ -1,5 +1,7 @@
 import os
 
+import time
+
 from db_setup import Base, User, Posts, Pictures, Connections
 
 from sqlalchemy.orm import sessionmaker
@@ -8,6 +10,7 @@ from sqlalchemy import create_engine
 from werkzeug import secure_filename
 
 from flask import Flask, request, render_template, redirect, jsonify, url_for
+
 
 UPLOAD_FOLDER = 'static'
 ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jqeg', 'gif'])
@@ -25,16 +28,38 @@ def allowed_file(filename):
     in ALLOWED_EXTENSIONS
 
 
+@app.route('/profile/<int:user_id>/pic/<int:picture_id>', methods=['GET', 'POST'])
+def viewPic(user_id, picture_id):
+    picture = session.query(Pictures).filter_by(id=picture_id).one()
+    return render_template('viewpic.html', user_id=user_id, picture=picture)
+
+
+@app.route('/profile/<int:user_id>/add_pic/<int:picture_id>', methods=['GET', 'POST'])
+def addPic(user_id, picture_id):
+    picture = session.query(Pictures).filter_by(id=picture_id).one()
+    if request.method == 'POST':
+        picDescr = request.form['picdes']
+        picture.description = picDescr
+        return redirect(url_for('showProfile', user_id=user_id))
+    else:
+
+        return render_template('addpic.html', user_id=user_id, picture=picture)
+
+
 @app.route('/profile/<int:user_id>/', methods=['GET', 'POST'])
 def showProfile(user_id):
     if request.method == 'POST':
         file = request.files['file']
         if file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
+            newPicture = Pictures(location=filename,
+                                  post_time=time.ctime(),
+                                  user_id=user_id)
+            session.add(newPicture)
+            session.commit()
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-            return redirect(url_for('showProfile', user_id=user_id))
+            return redirect(url_for('addPic', user_id=user_id, picture_id=newPicture.id))
     else:
-        print user_id
         user = session.query(User).filter_by(id=user_id).one()
         posts = session.query(Posts).filter_by(user_id=user_id)
         pictures = session.query(Pictures).filter_by(user_id=user_id)
