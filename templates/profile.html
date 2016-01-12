@@ -14,9 +14,9 @@
 			<img src={{url_for('static', filename=pic.location)}} height=75 width=75>
 		{% endfor %}
 		
-		<form action='' method='POST' enctype='multipart/for-data'>
-			<input type='file' name='upimage'></br>
-			<input type='submit' name='upload_bin' value='upload'>
+		<form action='' method='POST' enctype='multipart/form-data'>
+			<input type='file' name='file'></br>
+			<input type='submit' value='upload'>
 		</form>
 		</div>
 		</br>
