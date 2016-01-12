@@ -6,12 +6,14 @@ from sqlalchemy import DateTime, create_engine
 from sqlalchemy.orm import relationship
 from sqlalchemy.ext.declarative import declarative_base
 
-try:
-    os.remove('ninja.db')
-except:
-    print 'ninja.db does not exist in this directory.'
+if __name__ == '__main__':
+    try:
+        os.remove('ninja.db')
+    except:
+        print 'ninja.db does not exist in this directory.'
 
 Base = declarative_base()
+
 
 class User(Base):
     __tablename__ = 'user'
@@ -20,6 +22,7 @@ class User(Base):
     username = Column(String)
     email = Column(String)
     profile_pic = Column(String)
+    description = Column(String)
 
 
 class Pictures(Base):

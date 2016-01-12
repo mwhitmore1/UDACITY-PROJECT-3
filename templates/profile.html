@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+	<head>
+	</head>
+	<body>
+		{{user.username}} </br>
+		{{user.profile_pic}} </br>
+		{{user.description}} </br>
+		</br>
+		{% for i in posts %}
+		{{i.post_time}} </br>
+		{{i.subject}} </br>
+		{{i.description}} </br>
+		{% endfor %}
+	</body>
+</html>
