@@ -32,7 +32,7 @@ class Pictures(Base):
     id = Column(Integer, primary_key=True)
     location = Column(String)
     description = Column(String)
-    post_time = Column(DateTime)
+    post_time = Column(String)
     user_id = Column(Integer, ForeignKey('user.id'))
     u_id = relationship(User)
 
@@ -46,7 +46,9 @@ class Posts(Base):
     description = Column(String)
     post_time = Column(String)
     user_id = Column(Integer, ForeignKey('user.id'))
-    u_id = relationship(User)
+    u_id = relationship('User', foreign_keys=[user_id])
+    poster = Column(Integer, ForeignKey('user.id'))
+    p_id = relationship('User', foreign_keys=[poster])
 
 
 class Connections(Base):

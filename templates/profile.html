@@ -36,6 +36,15 @@
 		{{i.post_time}} </br>
 		{{i.subject}} </br>
 		{{i.description}} </br>
+		</br>
 		{% endfor %}
+		<div>
+			Add a post
+			<form action='' method='POST' enctype='multipart/form-data'>
+				<textarea type='text' name='newpost' style="height:200px; width:200px"></textarea>
+				</br>
+				<input type='submit' value='Submit'>
+			</form>
+		</div>
 	</body>
 </html>
