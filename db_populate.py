@@ -24,6 +24,11 @@ newUser = User(email='ninja@ninja.com',
 session.add(newUser)
 session.commit()
 
+newPicture = Pictures(location='ninja.png',
+                      user_id=1)
+session.add(newPicture)
+session.commit()
+
 newPost = Posts(post_time=time.ctime(),
                 user_id=1,
                 subject='This is the subject',
@@ -46,6 +51,13 @@ for user in users:
     print 'email: ',user.email
     print 'pic: ',user.profile_pic
     print ''
+
+pictures = session.query(Pictures).all()
+for picture in pictures:
+    print "picture id: ", picture.id
+    print "picture location: ", picture.location
+    print "poster id: ", picture.user_id
+
 
 posts = session.query(Posts).all()
 for post in posts:

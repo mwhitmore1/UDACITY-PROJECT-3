@@ -18,7 +18,11 @@ def showProfile(user_id):
     print user_id
     user = session.query(User).filter_by(id=user_id).one()
     posts = session.query(Posts).filter_by(user_id=user_id)
-    return render_template('profile.html', user=user, posts=posts)
+    pictures = session.query(Pictures).filter_by(user_id=user_id)
+    return render_template('profile.html',
+                           user=user,
+                           posts=posts,
+                           pictures=pictures)
 
 
 if __name__ == '__main__':

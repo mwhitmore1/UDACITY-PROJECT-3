@@ -9,6 +9,17 @@
 		</div>
 		{{user.description}} </br>
 		</br>
+		<div id='pics'>
+		{% for pic in pictures %}
+			<img src={{url_for('static', filename=pic.location)}} height=75 width=75>
+		{% endfor %}
+		
+		<form action='' method='POST' enctype='multipart/for-data'>
+			<input type='file' name='upimage'></br>
+			<input type='submit' name='upload_bin' value='upload'>
+		</form>
+		</div>
+		</br>
 		{% for i in posts %}
 		{{i.post_time}} </br>
 		{{i.subject}} </br>
