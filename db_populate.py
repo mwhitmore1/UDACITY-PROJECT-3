@@ -38,16 +38,8 @@ session.add(newUser)
 session.commit()
 
 
-newUser = User(email='ninja@ninja.com',
-               profile_pic='redninja.png',
-               username='pinkninja',
-               description='''This is a description text block.
-               This is a dfdescriptreiafdon text block.
-               This aifes a description textvf block.
-               This idfas a desdcriptrion text block.
-               Thisdfaa is a descddarrifption text block.
-               This weris a descripdwftion text block.
-               Thisr is a description text block.  ''')
+newUser = User(username='pinkninja'
+               )
 session.add(newUser)
 session.commit()
 
