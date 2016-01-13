@@ -31,13 +31,14 @@
 					success: function(result){
 						if (result){
 							if (!result['user']){
-								alert()
-								window.location.href = '/join';
+								setTimeout(function(){
+									window.location.href = '/join';
+								}, 4000);
 							}
-							$('#result').html('Login successful</br>' + result['user'] + '</br>Redirecting...');
 							setTimeout(function(){
 								//window.location.href = '/restaurant';
 							}, 4000);
+							$('#result').html('Login successful</br>Redirecting...');
 						}
 						else if (result['statusText']){
 							console.log('There was an error ' + result['responseText']);

@@ -115,9 +115,11 @@ def gconnect():
 
 @app.route('/join', methods = ['GET', 'POST'])
 def newAccount():
-    print 'new account'
     if request.method == 'POST':
-        pass
+        newUser = User(username=request.form['newname'])
+        session.add(newUser)
+        session.commit()
+        return redirect(url_for('showProfile', user_id=newUser.id))
     else:
         return render_template('newaccount.html')
 
@@ -130,6 +132,7 @@ def viewPic(user_id, picture_id):
 
 @app.route('/profile/<int:user_id>/add_pic/<int:picture_id>', methods=['GET', 'POST'])
 def addPic(user_id, picture_id):
+    print 'addPic called.'
     picture = session.query(Pictures).filter_by(id=picture_id).one()
     if request.method == 'POST':
         picDescr = request.form['picdes']
@@ -142,14 +145,18 @@ def addPic(user_id, picture_id):
 
 @app.route('/profile/<int:user_id>/', methods=['GET', 'POST'])
 def showProfile(user_id):
+    print 'show profile'
     if request.method == 'POST':
-        if request.form['newpost']:
+        print 'end'
+        if request.form.get('newpost'):
+            print 'newpost'
             newPost = Posts(user_id=user_id,
                             description=request.form['newpost'],
                             post_time=time.ctime())
             session.add(newPost)
             session.commit()
             return redirect(url_for('showProfile', user_id=user_id))
+        print 'picture upload'
         file = request.files['file']
         if file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
@@ -164,7 +171,8 @@ def showProfile(user_id):
         user = session.query(User).filter_by(id=user_id).one()
         posts = session.query(Posts).filter_by(user_id=user_id)
         pictures = session.query(Pictures).filter_by(user_id=user_id)
-        connections = session.query(Connections, User).filter(Connections.user_id==user_id, User.id==Connections.connected_to)
+        connections = session.query(Connections, User).filter(Connections.user_id==user_id, User.id==Connections.connected_to).all()
+        print connections[0][0].connected_to
         return render_template('profile.html',
                                user=user,
                                posts=posts,

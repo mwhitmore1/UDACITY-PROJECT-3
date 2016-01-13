@@ -8,6 +8,7 @@
 		{{user.username}} </br>
 		</div>
 		<div id='connections'>
+		{% if connections %}
 			{% for c in connections %}
 			<div class='connection'>
 				<a href={{url_for('showProfile', user_id=c[1].id)}}>
@@ -16,6 +17,7 @@
 				</a>
 			</div>
 			{% endfor %}
+		{% endif %}
 		</div>
 		{{user.description}} </br>
 		</br>
