@@ -21,7 +21,7 @@ class User(Base):
     id = Column(Integer, primary_key=True)
     username = Column(String)
     email = Column(String)
-    profile_pic = Column(String)
+    profile_pic = Column(Integer, default=1)
     description = Column(String)
 
 
@@ -30,7 +30,7 @@ class Pictures(Base):
     __tablename__ = 'pictures'
 
     id = Column(Integer, primary_key=True)
-    location = Column(String)
+    location = Column(String, default='default_ninja.png')
     description = Column(String)
     post_time = Column(String)
     user_id = Column(Integer, ForeignKey('user.id'))

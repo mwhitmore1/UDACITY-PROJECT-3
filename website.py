@@ -160,11 +160,12 @@ def showProfile(user_id):
         file = request.files['file']
         if file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
-            newPicture = Pictures(location=filename,
-                                  post_time=time.ctime(),
+            newPicture = Pictures(post_time=time.ctime(),
                                   user_id=user_id)
             session.add(newPicture)
             session.commit()
+            filename= 'image_' + str(newPicture.id) + '_' + filename
+            newPicture.location = filename
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
             return redirect(url_for('addPic', user_id=user_id, picture_id=newPicture.id))
     else:
