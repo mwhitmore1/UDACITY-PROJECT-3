@@ -19,15 +19,28 @@
 			{% endfor %}
 		{% endif %}
 		</div>
+		<div id='descritpion'>
+		{% if user.description %}
 		{{user.description}} </br>
+		{% endif %}
 		</br>
+		<div>
+			Edit description
+			<form action='' method='POST' enctype='multipart/form-data'>
+				<textarea type='text' name='editdescription' style="height:200px; width:200px"></textarea>
+				</br>
+				<input type='submit' value='Submit'>
+			</form>
+			</br>
+		</div>
+		</div>
 		<div id='pics'>
+		Add a picture
 		{% for pic in pictures %}
 			<a  href={{url_for('viewPic', user_id=user.id, picture_id=pic.id)}}>
 				<img src={{url_for('static', filename=pic.location)}} height=80 width=80>
 			</a>
 		{% endfor %}
-		
 		<form action='' method='POST' enctype='multipart/form-data'>
 			<input type='file' name='file'></br>
 			<input type='submit' value='upload'>

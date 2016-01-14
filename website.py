@@ -146,15 +146,18 @@ def addPic(user_id, picture_id):
 @app.route('/profile/<int:user_id>/', methods=['GET', 'POST'])
 def showProfile(user_id):
     print 'show profile'
+    user = session.query(User).filter_by(id=user_id).one()
     if request.method == 'POST':
         print 'end'
         if request.form.get('newpost'):
-            print 'newpost'
             newPost = Posts(user_id=user_id,
                             description=request.form['newpost'],
                             post_time=time.ctime())
             session.add(newPost)
             session.commit()
+            return redirect(url_for('showProfile', user_id=user_id))
+        if request.form.get('editdescription'):
+            user.description = request.form['editdescription']
             return redirect(url_for('showProfile', user_id=user_id))
         print 'picture upload'
         file = request.files['file']
@@ -169,11 +172,11 @@ def showProfile(user_id):
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
             return redirect(url_for('addPic', user_id=user_id, picture_id=newPicture.id))
     else:
-        user = session.query(User).filter_by(id=user_id).one()
         posts = session.query(Posts).filter_by(user_id=user_id)
         pictures = session.query(Pictures).filter_by(user_id=user_id)
         connections = session.query(Connections, User).filter(Connections.user_id==user_id, User.id==Connections.connected_to).all()
-        print connections[0][0].connected_to
+        print user.profile_pic
+        print connections
         return render_template('profile.html',
                                user=user,
                                posts=posts,
