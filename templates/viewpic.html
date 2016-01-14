@@ -4,7 +4,7 @@
 	</head>
 	<body>
 		<div>
-			<img src={{url_for('static', filename=picture.location)}} height=300, width=300>
+			<img src='/static/images/{{user.profile_pic}}' height=300, width=300>
 			<div>
 				{{picture.post_time}}
 				</br>

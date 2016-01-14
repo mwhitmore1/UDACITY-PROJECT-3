@@ -4,7 +4,7 @@
 	</head>
 	<body>
 		<div>
-			<img src={{url_for('static', filename=user.profile_pic)}} width=200 height=200>
+			<img src='/static/images/{{user.profile_pic}}' width=200 height=200>
 		{{user.username}} </br>
 		</div>
 		<div id='connections'>
@@ -12,12 +12,13 @@
 			{% for c in connections %}
 			<div class='connection'>
 				<a href={{url_for('showProfile', user_id=c[1].id)}}>
-					<img src={{url_for('static', filename=c[1].profile_pic)}} height=60 width=60>
+					<img src='/static/images/{{c[1].profile_pic}}' height=60 width=60>
 					{{c[1].username}}
 				</a>
 			</div>
 			{% endfor %}
 		{% endif %}
+		<a href={{url_for('viewConnections', user_id=user.id, connections=connections)}}>All connections</a>
 		</div>
 		<div id='descritpion'>
 		{% if user.description %}
@@ -38,7 +39,7 @@
 		Add a picture
 		{% for pic in pictures %}
 			<a  href={{url_for('viewPic', user_id=user.id, picture_id=pic.id)}}>
-				<img src={{url_for('static', filename=pic.location)}} height=80 width=80>
+				<img src='/static/images/{{pic.location}}' height=80 width=80>
 			</a>
 		{% endfor %}
 		<form action='' method='POST' enctype='multipart/form-data'>

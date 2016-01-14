@@ -21,7 +21,7 @@ from flask import Flask, request, render_template, redirect, jsonify, \
 from flask import session as login_session
 
 
-UPLOAD_FOLDER = 'static'
+UPLOAD_FOLDER = 'static/images'
 ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jqeg', 'gif'])
 
 app = Flask(__name__)
@@ -104,6 +104,7 @@ def gconnect():
     login_session['email'] = data['email']
     try:
         user = session.query(User).filter_by(email=login_session['email']).one()
+        login_session['id'] = user.id
         flash('%s has logged in.' % user.username)
         return url_for('showProfile', user_id=user.id)
     except:
@@ -119,6 +120,7 @@ def newAccount():
         newUser = User(username=request.form['newname'])
         session.add(newUser)
         session.commit()
+        login_session['id'] = newUser.id
         return redirect(url_for('showProfile', user_id=newUser.id))
     else:
         return render_template('newaccount.html')
@@ -139,9 +141,14 @@ def addPic(user_id, picture_id):
         picture.description = picDescr
         return redirect(url_for('showProfile', user_id=user_id))
     else:
-
         return render_template('addpic.html', user_id=user_id, picture=picture)
 
+
+@app.route('/profile/<int:user_id>/connections/')
+def viewConnections(user_id):
+    user = session.query(User).filter_by(id=user_id).one()
+    connections = session.query(Connections, User).filter(Connections.user_id==user_id, User.id==Connections.connected_to).all()
+    return render_template('viewcon.html', user=user, connections=connections)
 
 @app.route('/profile/<int:user_id>/', methods=['GET', 'POST'])
 def showProfile(user_id):
@@ -176,13 +183,12 @@ def showProfile(user_id):
         posts = session.query(Posts).filter_by(user_id=user_id).order_by(desc(Posts.id)).all()
         pictures = session.query(Pictures).filter_by(user_id=user_id).all()
         connections = session.query(Connections, User).filter(Connections.user_id==user_id, User.id==Connections.connected_to).all()
-        print user.profile_pic
-        print connections
-        return render_template('profile.html',
-                               user=user,
-                               posts=posts,
-                               connections=connections,
-                               pictures=pictures)
+        if login_session.get('id') == user_id:
+            return render_template('profile.html',
+                                   user=user,
+                                   posts=posts,
+                                   connections=connections,
+                                   pictures=pictures)
 
 if __name__ == '__main__':
     app.secret_key = 'super secret key'

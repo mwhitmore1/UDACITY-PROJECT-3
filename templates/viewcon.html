@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+	<head>
+	</head>
+	<body>
+		<div id='connections'>
+			<div>
+				{{user.username}}'s connections
+			</div>
+		{% if connections %}
+			{% for c in connections %}
+			<div class='connection'>
+				<a href={{url_for('showProfile', user_id=c[1].id)}}>
+					<img src='/static/images/{{c[1].profile_pic}}' height=60 width=60>
+					{{c[1].username}}
+				</a>
+			</div>
+			{% endfor %}
+		{% endif %}
+			<div>
+				<a href={{url_for('showProfile', user_id=user.id)}}>Back to</br>{{user.username}}'s profile</a>
+			</div>
+		</div>
+	</body>
+</html>
