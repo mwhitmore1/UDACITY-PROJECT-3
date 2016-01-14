@@ -8,7 +8,7 @@ import requests
 from db_setup import Base, User, Posts, Pictures, Connections
 
 from sqlalchemy.orm import sessionmaker
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, desc
 
 from oauth2client.client import flow_from_clientsecrets
 from oauth2client.client import FlowExchangeError
@@ -151,6 +151,7 @@ def showProfile(user_id):
         print 'end'
         if request.form.get('newpost'):
             newPost = Posts(user_id=user_id,
+                            subject=request.form['postsubject'],
                             description=request.form['newpost'],
                             post_time=time.ctime())
             session.add(newPost)
@@ -172,8 +173,8 @@ def showProfile(user_id):
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
             return redirect(url_for('addPic', user_id=user_id, picture_id=newPicture.id))
     else:
-        posts = session.query(Posts).filter_by(user_id=user_id)
-        pictures = session.query(Pictures).filter_by(user_id=user_id)
+        posts = session.query(Posts).filter_by(user_id=user_id).order_by(desc(Posts.id)).all()
+        pictures = session.query(Pictures).filter_by(user_id=user_id).all()
         connections = session.query(Connections, User).filter(Connections.user_id==user_id, User.id==Connections.connected_to).all()
         print user.profile_pic
         print connections

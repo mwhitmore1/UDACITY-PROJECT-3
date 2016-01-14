@@ -48,14 +48,19 @@
 		</div>
 		</br>
 		{% for i in posts %}
-		{{i.post_time}} </br>
-		{{i.subject}} </br>
-		{{i.description}} </br>
-		</br>
+			{{i.post_time}} </br>
+			{% if i.subject %}
+				{{i.subject}} </br>
+			{% endif %}
+			{% if i.description %}
+				{{i.description}} </br>
+			{% endif %}
+			</br>
 		{% endfor %}
 		<div>
 			Add a post
 			<form action='' method='POST' enctype='multipart/form-data'>
+				<input type='text' name='postsubject'>
 				<textarea type='text' name='newpost' style="height:200px; width:200px"></textarea>
 				</br>
 				<input type='submit' value='Submit'>
