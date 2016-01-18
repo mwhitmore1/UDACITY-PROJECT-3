@@ -1,9 +1,30 @@
 <!DOCTYPE html>
 <html>
 	<head>
+		<link rel='stylesheet' href={{url_for('static', filename='style/style.css')}}>
+		<link href='https://fonts.googleapis.com/css?family=Condiment|Chango|>hojumaru&subset=latin,latin-ext' rel='stylesheet' type='text/css'>
+		<title>
+			View Connections
+		</title>
 	</head>
 	<body>
 		<div id='connections'>
+			<div class='header'>
+				<div class='row' style='margin-bottom:8px;'>
+					<div class='col-md-6'>
+						<div id='thesocial'>The Social </div>
+						<div class='ninja'>Ninja</div>
+					</div>
+					<div class='col-md-6' style='padding-top:25px'>
+							
+							<div class='textright'>
+								<a class='link' href={{url_for('gdisconnect')}}>Log Out</a>
+							</div>
+					</div>
+				</div>
+				<hr class='row, headerline'>
+			</div>
+			<div class='offset'></div>
 			<div>
 				{{user.username}}'s connections
 			</div>
@@ -18,7 +39,7 @@
 			{% endfor %}
 		{% endif %}
 			<div>
-				<a href={{url_for('showProfile', user_id=user.id)}}>Back to</br>{{user.username}}'s profile</a>
+				<a href={{url_for('showProfile', user_id=user.id)}}>Back to {{user.username}}'s profile</a>
 			</div>
 		</div>
 	</body>

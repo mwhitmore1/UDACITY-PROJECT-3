@@ -4,19 +4,52 @@
 		<title>
 			Create Account
 		</title>
+		<link rel='stylesheet' href={{url_for('static', filename='style/style.css')}}>
+		<link href='https://fonts.googleapis.com/css?family=Condiment|Chango|Shojumaru&subset=latin,latin-ext' rel='stylesheet' type='text/css'>
 	</head>
 	<body>
 		<div>
-			<div>
-				Create Account
+			<div class='header'>
+				<div class='row' style='margin-bottom:8px;'>
+					<div class='col-md-6'>
+						<div id='thesocial'>The Social </div>
+						<div class='ninja'>Ninja</div>
+					</div>
+					<div class='col-md-6' style='padding-top:25px'>
+							
+							<div class='textright'>
+								<a class='link' href={{url_for('gdisconnect')}}>Log Out</a>
+							</div>
+					</div>
+				</div>
+				<hr class='row, headerline'>
 			</div>
-			<form method='POST'>
-				Enter username:
-				<input type='text' name='newname'></br>
-				Are you a ninja?
-				<input type='button' value='No'>
-				<input type='submit' value='If I told you I would have to kill you'>
-			</form>
+			<div class='centertext'>
+				<div class='offset'></div>
+				<h1>
+					Create Account
+				</h1>
+				<div>
+					<form method='POST' id='newun'>
+						<div class='field'>
+							<div class='row, centertext'><h2>Enter Username:</h2></div>
+							<div class='row, centertext'><input type='text' name='newname'></br></div>
+						</div>
+						</div>
+						<div class='field'>
+							<div class='row, centertext'>
+								<h2>Are you a ninja?</h2>
+							</div>
+							<div class='row'>
+								<div class='col-md-3'></div>
+								<div class='col-md-3'><button class='button' type='button'>No</br></button></div>
+								<div class='col-md-3'><button class='button' type='submit'>If I told you</br>I would have</br>to kill you</button></div>
+								<div class='col-md-3'></div>
+							</div>
+						</div>
+					</form>
+				</div>
+			</div>
 		</div>
 	</body>
 </html>

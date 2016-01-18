@@ -1,9 +1,30 @@
 <!DOCTYPE html>
 <html>
 	<head>
+		<link rel='stylesheet' href={{url_for('static', filename='style/style.css')}}>
+		<link href='https://fonts.googleapis.com/css?family=Condiment|Chango|Shojumaru&subset=latin,latin-ext' rel='stylesheet' type='text/css'
+		<title>
+			Add Picture
+		</title>
 	</head>
 	<body>
 		<div>
+			<div class='header'>
+				<div class='row' style='margin-bottom:8px;'>
+					<div class='col-md-6'>
+						<div id='thesocial'>The Social </div>
+						<div class='ninja'>Ninja</div>
+					</div>
+					<div class='col-md-6' style='padding-top:25px'>
+							
+							<div class='textright'>
+								<a class='link' href={{url_for('gdisconnect')}}>Log Out</a>
+							</div>
+					</div>
+				</div>
+				<hr class='row, headerline'>
+			</div>
+			<div class='offset'></div>
 			<img src='/static/images/{{user.profile_pic}}' height=300, width=300>
 			<div>
 				Add a Description

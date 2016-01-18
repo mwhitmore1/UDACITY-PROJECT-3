@@ -114,6 +114,28 @@ def gconnect():
         return response
 
 
+@app.route('/gdisconnect')
+def gdisconnect():
+    access_token = login_session['credentials']
+    if access_token is None:
+        response = make_response(json.dumps('User not logged in.'), 401)
+        response.headers['Content-Type'] = 'application/json'
+        return response
+    url = 'https://accounts.google.com/o/oauth2/revoke?token=%s' % access_token
+    h = httplib2.Http()
+    result = json.loads(h.request(url, 'GET')[1])
+    if result.get('error') is not None:
+        response = make_response(json.dumps('Log out failed.'), 500)
+        response.headers['Content-Type'] = 'application/json'
+        return response
+    del login_session['credentials']
+    del login_session['email']
+    del login_session['gplus_id']
+    del login_session['id']
+    flash('Logout Successful!')
+    return redirect(url_for('showLogin'))
+
+
 @app.route('/join', methods = ['GET', 'POST'])
 def newAccount():
     if request.method == 'POST':
@@ -178,13 +200,13 @@ def showProfile(user_id):
             filename= 'image_' + str(newPicture.id) + '_' + filename
             newPicture.location = filename
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-            return redirect(url_for('addPic', user_id=user_id, picture_id=newPicture.id))
+            return render_template('addpic.html', user=user, picture=newPicture)
     else:
         posts = session.query(Posts).filter_by(user_id=user_id).order_by(desc(Posts.id)).all()
         pictures = session.query(Pictures).filter_by(user_id=user_id).all()
         connections = session.query(Connections, User).filter(Connections.user_id==user_id, User.id==Connections.connected_to).all()
-        if login_session.get('id') == user_id:
-            return render_template('profile.html',
+        #if login_session.get('id') == user_id:
+        return render_template('profile.html',
                                    user=user,
                                    posts=posts,
                                    connections=connections,

@@ -1,52 +1,95 @@
 <!DOCTYPE html>
 <html>
 	<head>
+		<title>
+			{{user.username}}'s Profile
+		</title>
+		<link rel='stylesheet' href={{url_for('static', filename='style/style.css')}}>
+		<link href='https://fonts.googleapis.com/css?family=Condiment|Chango|Shojumaru&subset=latin,latin-ext' rel='stylesheet' type='text/css'>
 	</head>
 	<body>
 		<div>
-			<img src='/static/images/{{user.profile_pic}}' width=200 height=200>
-		{{user.username}} </br>
-		</div>
-		<div id='connections'>
-		{% if connections %}
-			{% for c in connections %}
-			<div class='connection'>
-				<a href={{url_for('showProfile', user_id=c[1].id)}}>
-					<img src='/static/images/{{c[1].profile_pic}}' height=60 width=60>
-					{{c[1].username}}
-				</a>
+			<div class='header'>
+				<div class='row' style='margin-bottom:8px;'>
+					<div class='col-md-6'>
+						<div id='thesocial'>The Social </div>
+						<div class='ninja'>Ninja</div>
+					</div>
+					<div class='col-md-6' style='padding-top:25px'>
+							
+							<div class='textright'>
+								<a class='link' href={{url_for('gdisconnect')}}>Log Out</a>
+							</div>
+					</div>
+				</div>
+				<hr class='row, headerline'>
 			</div>
-			{% endfor %}
-		{% endif %}
-		<a href={{url_for('viewConnections', user_id=user.id, connections=connections)}}>All connections</a>
-		</div>
-		<div id='descritpion'>
-		{% if user.description %}
-		{{user.description}} </br>
-		{% endif %}
-		</br>
-		<div>
-			Edit description
-			<form action='' method='POST' enctype='multipart/form-data'>
-				<textarea type='text' name='editdescription' style="height:200px; width:200px"></textarea>
-				</br>
-				<input type='submit' value='Submit'>
-			</form>
-			</br>
-		</div>
-		</div>
-		<div id='pics'>
-		Add a picture
-		{% for pic in pictures %}
-			<a  href={{url_for('viewPic', user_id=user.id, picture_id=pic.id)}}>
-				<img src='/static/images/{{pic.location}}' height=80 width=80>
-			</a>
-		{% endfor %}
-		<form action='' method='POST' enctype='multipart/form-data'>
-			<input type='file' name='file'></br>
-			<input type='submit' value='upload'>
-		</form>
-		</div>
+		
+			<div id='top'>
+				<div class='row'>
+					<div class='offset'></div>
+				</div>
+				<div class='row'>
+					<div class='col-md-4'>
+						<img src='/static/images/{{user.profile_pic}}' width=200 height=200>
+						
+						<div id='connections'>
+							<div class='row-con'>
+								<h1 style='width:310px;'>Connections</h1>
+							</div>
+							<div class='row-con'>
+							{% if connections %}
+								{% for c in connections[:8] %}
+								<div class='col-con'>
+									<a href={{url_for('showProfile', user_id=c[1].id)}}>
+										<img src='/static/images/{{c[1].profile_pic}}' height=60 width=60>
+									</a>
+								</div>
+								{% endfor %}
+							{% endif %}
+							<a class='link' href={{url_for('viewConnections', user_id=user.id, connections=connections)}}>All Connections</a>
+							</div>
+						</div>
+						
+						<div id='pics'>
+							<h1>Pictures</h1>
+							{% for pic in pictures %}
+								<a  href={{url_for('viewPic', user_id=user.id, picture_id=pic.id)}}>
+									<img src='/static/images/{{pic.location}}' height=60 width=60>
+								</a>
+							{% endfor %}
+							<form action='' method='POST' enctype='multipart/form-data'>
+								<input type='file' name='file'></br>
+								<input type='submit' value='upload'>
+							</form>
+						</div>
+						
+					</div>
+					
+					<div class='col-md-8'>
+						<div class='username'>{{user.username}} </div>
+						<div id='descritpion'>
+							{% if user.description %}
+							{{user.description}} </br>
+							{% endif %}
+							</br>
+							<div>
+								Edit description
+								<form action='' method='POST' enctype='multipart/form-data'>
+									<textarea type='text' name='editdescription' style="height:200px; width:200px"></textarea>
+									</br>
+									<input type='submit' value='Submit'>
+								</form>
+								</br>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		
+		
+		
+		
 		</br>
 		{% for i in posts %}
 			{{i.post_time}} </br>
