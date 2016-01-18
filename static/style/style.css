@@ -24,8 +24,8 @@
 .username {
 	font-family: 'Condiment', cursive;
 	font-size: 64px;
-	padding-top:32px;
-	padding-left:53px;
+	padding:0px;
+	margin-left:-18px;
 }
 
 
@@ -138,6 +138,19 @@ h2 {
 	
 }
 
+h3 {
+	font-size: 14pt;
+	margin:0px;
+	margin-bottom:9px;
+}
+
+.time {
+	font-size: 10pt;
+	font-style: italic;
+	margin:0px;
+	margin-bottom:5px;
+}
+
 .col-con {
 	width: 62px;
 }
@@ -147,4 +160,12 @@ h2 {
 	flex-wrap: wrap;
 	width: 248px;
 	text-align: center;
+}
+
+.conbox {
+	padding-top: 30px;
+}
+
+.formbox {
+	padding:20px;
 }

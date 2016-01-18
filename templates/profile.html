@@ -30,38 +30,42 @@
 					<div class='offset'></div>
 				</div>
 				<div class='row'>
-					<div class='col-md-4'>
+					<div class='col-md-4' style='text-align:center;'>
 						<img src='/static/images/{{user.profile_pic}}' width=200 height=200>
 						
 						<div id='connections'>
-							<div class='row-con'>
-								<h1 style='width:310px;'>Connections</h1>
-							</div>
-							<div class='row-con'>
-							{% if connections %}
-								{% for c in connections[:8] %}
-								<div class='col-con'>
-									<a href={{url_for('showProfile', user_id=c[1].id)}}>
-										<img src='/static/images/{{c[1].profile_pic}}' height=60 width=60>
-									</a>
+							<div class='conbox'>
+								<div class='row-con'>
+									<h1 style='width:310px;'>Connections</h1>
 								</div>
-								{% endfor %}
-							{% endif %}
-							<a class='link' href={{url_for('viewConnections', user_id=user.id, connections=connections)}}>All Connections</a>
+								<div class='row-con'>
+								{% if connections %}
+									{% for c in connections[:8] %}
+									<div class='col-con'>
+										<a href={{url_for('showProfile', user_id=c[1].id)}}>
+											<img src='/static/images/{{c[1].profile_pic}}' height=60 width=60>
+										</a>
+									</div>
+									{% endfor %}
+								{% endif %}
+								<a class='link' href={{url_for('viewConnections', user_id=user.id, connections=connections)}}>All Connections</a>
+								</div>
 							</div>
 						</div>
 						
 						<div id='pics'>
-							<h1>Pictures</h1>
-							{% for pic in pictures %}
-								<a  href={{url_for('viewPic', user_id=user.id, picture_id=pic.id)}}>
-									<img src='/static/images/{{pic.location}}' height=60 width=60>
-								</a>
-							{% endfor %}
-							<form action='' method='POST' enctype='multipart/form-data'>
-								<input type='file' name='file'></br>
-								<input type='submit' value='upload'>
-							</form>
+							<div class='conbox'>
+								<h1>Pictures</h1>
+								{% for pic in pictures %}
+									<a  href={{url_for('viewPic', user_id=user.id, picture_id=pic.id)}}>
+										<img src='/static/images/{{pic.location}}' height=60 width=60>
+									</a>
+								{% endfor %}
+								<form action='' method='POST' enctype='multipart/form-data'>
+									<input type='file' name='file'></br>
+									<input type='submit' value='upload'>
+								</form>
+							</div>
 						</div>
 						
 					</div>
@@ -73,16 +77,43 @@
 							{{user.description}} </br>
 							{% endif %}
 							</br>
-							<div>
-								Edit description
+							<div class='formbox'>
+								<h1>Edit Description</h1>
 								<form action='' method='POST' enctype='multipart/form-data'>
-									<textarea type='text' name='editdescription' style="height:200px; width:200px"></textarea>
+									<textarea type='text' name='editdescription' style="height:200px; width:100%"></textarea>
 									</br>
 									<input type='submit' value='Submit'>
 								</form>
 								</br>
 							</div>
 						</div>
+						
+						<div id='posts'>
+						{% for i in posts %}
+							<div class='time'>{{i.post_time}}</div>
+							{% if i.subject %}
+							<h3>{{i.subject}}</h3>							
+							{% endif %}
+							{% if i.description %}
+								{{i.description}} </br></br>
+							{% endif %}
+							</br>
+						{% endfor %}
+							<div class='formbox'>
+								<h1>Add Post</h1>
+								<form action='' method='POST' enctype='multipart/form-data'>
+									Subject:
+									<input type='text' name='postsubject' style='width:100%'>
+									</br>
+									</br>
+									Content:
+									<textarea type='text' name='newpost' style="height:200px; width:100%"></textarea>
+									</br>
+									<input type='submit' value='Post'>
+								</form>
+							</div>
+						</div>
+
 					</div>
 				</div>
 			</div>
@@ -90,25 +121,7 @@
 		
 		
 		
-		</br>
-		{% for i in posts %}
-			{{i.post_time}} </br>
-			{% if i.subject %}
-				{{i.subject}} </br>
-			{% endif %}
-			{% if i.description %}
-				{{i.description}} </br>
-			{% endif %}
-			</br>
-		{% endfor %}
-		<div>
-			Add a post
-			<form action='' method='POST' enctype='multipart/form-data'>
-				<input type='text' name='postsubject'>
-				<textarea type='text' name='newpost' style="height:200px; width:200px"></textarea>
-				</br>
-				<input type='submit' value='Submit'>
-			</form>
+					
 		</div>
 	</body>
 </html>
