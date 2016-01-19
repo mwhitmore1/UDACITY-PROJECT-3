@@ -2,7 +2,7 @@
 <html>
 	<head>
 		<link rel='stylesheet' href={{url_for('static', filename='style/style.css')}}>
-		<link href='https://fonts.googleapis.com/css?family=Condiment|Chango|Shojumaru&subset=latin,latin-ext' rel='stylesheet' type='text/css'
+		<link href='https://fonts.googleapis.com/css?family=Condiment|Chango|Shojumaru&subset=latin,latin-ext' rel='stylesheet' type='text/css'>
 		<title>
 			Add Picture
 		</title>
@@ -24,15 +24,20 @@
 				</div>
 				<hr class='row, headerline'>
 			</div>
-			<div class='offset'></div>
-			<img src='/static/images/{{user.profile_pic}}' height=300, width=300>
-			<div>
-				Add a Description
-				<form action='' method='POST' enctype='multipart/form-data'>
-					<textarea type='text' name='picdes' style="height:200px; width:200px"></textarea>
+		
+			<div class='centertext'>
+				<div class='offset'></div>
+				<h1 class='bottommargin20'>Add Picture</h1>
+				<img class='bottommargin20' src='/static/images/{{picture.location}}' height=300, width=300>
+				<div>
+					<h1 class='bottommargin20'>Add Description</h1>
+					<form action='' method='POST' enctype='multipart/form-data'>
+					<textarea type='text' name='picdes' style="height:150px; width:400px"></textarea>
 					</br>
 					<input type='submit' value='Submit'>
-				</form>
+					<input name='cancel' type='submit' value='Cancel'>
+					</form>
+				</div>
 			</div>
 		</div>
 	</body>

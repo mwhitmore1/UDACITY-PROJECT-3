@@ -6,6 +6,17 @@
 		</title>
 		<link rel='stylesheet' href={{url_for('static', filename='style/style.css')}}>
 		<link href='https://fonts.googleapis.com/css?family=Condiment|Chango|Shojumaru&subset=latin,latin-ext' rel='stylesheet' type='text/css'>
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+		<script>
+			$(document).ready(function(){
+				$('#loadpic').change(function(){
+					if ($(this).val())
+						$('#submitpic').attr('disabled', false)
+					else
+						$('#submitpic').attr('disabled', true)
+				})
+			});
+		</script>
 	</head>
 	<body>
 		<div>
@@ -58,12 +69,12 @@
 								<h1>Pictures</h1>
 								{% for pic in pictures %}
 									<a  href={{url_for('viewPic', user_id=user.id, picture_id=pic.id)}}>
-										<img src='/static/images/{{pic.location}}' height=60 width=60>
+										<img src={{url_for('static', filename='images/'+pic.location)}} height=60 width=60>
 									</a>
 								{% endfor %}
 								<form action='' method='POST' enctype='multipart/form-data'>
-									<input type='file' name='file'></br>
-									<input type='submit' value='upload'>
+									<input id='loadpic'  type='file' name='file'></br>
+									<input id='submitpic' type='submit' value='upload' disabled>
 								</form>
 							</div>
 						</div>

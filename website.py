@@ -151,19 +151,23 @@ def newAccount():
 @app.route('/profile/<int:user_id>/pi/<int:picture_id>', methods=['GET', 'POST'])
 def viewPic(user_id, picture_id):
     picture = session.query(Pictures).filter_by(id=picture_id).one()
-    return render_template('viewpic.html', user_id=user_id, picture=picture)
+    return render_template('viewpic.html', picture=picture)
 
 
 @app.route('/profile/<int:user_id>/add_pic/<int:picture_id>', methods=['GET', 'POST'])
 def addPic(user_id, picture_id):
     print 'addPic called.'
     picture = session.query(Pictures).filter_by(id=picture_id).one()
+    user = session.query(User).filter_by(id=user_id).one()
     if request.method == 'POST':
+        if request.form.get('cancel'):
+            session.delete(picture)
+            session.commit()
         picDescr = request.form['picdes']
         picture.description = picDescr
         return redirect(url_for('showProfile', user_id=user_id))
     else:
-        return render_template('addpic.html', user_id=user_id, picture=picture)
+        return render_template('addpic.html', user=user, picture=picture)
 
 
 @app.route('/profile/<int:user_id>/connections/')
@@ -190,22 +194,25 @@ def showProfile(user_id):
             user.description = request.form['editdescription']
             return redirect(url_for('showProfile', user_id=user_id))
         print 'picture upload'
-        file = request.files['file']
-        if file and allowed_file(file.filename):
-            filename = secure_filename(file.filename)
-            newPicture = Pictures(post_time=time.ctime(),
-                                  user_id=user_id)
-            session.add(newPicture)
-            session.commit()
-            filename= 'image_' + str(newPicture.id) + '_' + filename
-            newPicture.location = filename
-            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-            return render_template('addpic.html', user=user, picture=newPicture)
+        if request.files.get('file'):
+            file = request.files['file']
+            if file and allowed_file(file.filename):
+                filename = secure_filename(file.filename)
+                newPicture = Pictures(post_time=time.ctime(),
+                                      user_id=user_id)
+                session.add(newPicture)
+                session.commit()
+                filename= 'image_' + str(newPicture.id) + '_' + filename
+                newPicture.location = filename
+                file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+                return redirect(url_for('addPic', user_id=user.id, picture_id=newPicture.id))
     else:
         posts = session.query(Posts).filter_by(user_id=user_id).order_by(desc(Posts.id)).all()
         pictures = session.query(Pictures).filter_by(user_id=user_id).all()
         connections = session.query(Connections, User).filter(Connections.user_id==user_id, User.id==Connections.connected_to).all()
         #if login_session.get('id') == user_id:
+        for pic in pictures:
+            print pic.id, pic.location
         return render_template('profile.html',
                                    user=user,
                                    posts=posts,
