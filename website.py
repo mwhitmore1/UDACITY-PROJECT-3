@@ -148,6 +148,12 @@ def newAccount():
         return render_template('newaccount.html')
 
 
+@app.route('/ninjas')
+def ninjas():
+    ninjas = session.query(User).all()
+    return render_template('ninjas.html', ninjas=ninjas)
+
+
 @app.route('/profile/<int:user_id>/pi/<int:picture_id>', methods=['GET', 'POST'])
 def viewPic(user_id, picture_id):
     picture = session.query(Pictures).filter_by(id=picture_id).one()

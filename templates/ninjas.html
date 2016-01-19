@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<link rel='stylesheet' href={{url_for('static', filename='style/style.css')}}>
+		<link href='https://fonts.googleapis.com/css?family=Condiment|Chango|Shojumaru&subset=latin,latin-ext' rel='stylesheet' type='text/css'>
+		<title>
+			Add Picture
+		</title>
+	</head>
+	<body>
+		<div>
+			<div class='header'>
+				<div class='row' style='margin-bottom:8px;'>
+					<div class='col-md-6'>
+						<div id='thesocial'>The Social </div>
+						<div class='ninja'>Ninja</div>
+					</div>
+					<div class='col-md-6' style='padding-top:25px'>
+							
+							<div class='textright'>
+								<a class='link' href={{url_for('gdisconnect')}}>Log Out</a>
+							</div>
+					</div>
+				</div>
+				<hr class='row, headerline'>
+			</div>
+		
+			<div class='centertext'>
+				<div class='offset'></div>
+				<h1 class='bottommargin20'>Ninjas</h1>
+				<div class='row'>
+					{% for ninja in ninjas %}
+					<div class='col-20p'>
+						<a href={{url_for('showProfile', user_id=ninja.id)}} class='ninjalist'>
+							<img src={{url_for('static', filename='images/'+ninja.profile_pic)}} style='height:100px; width:100px'>
+						</a>
+						<div>
+							<a href={{url_for('showProfile', user_id=ninja.id)}} class='ninjalist'>
+								{{ninja.username}}
+							</a>
+						</div>
+					</div>
+					{% endfor %}
+				</div>
+			</div>
+		</div>
+	</body>
+</html>
