@@ -186,7 +186,9 @@ def showProfile(user_id):
             newPost = Posts(user_id=user_id,
                             subject=request.form['postsubject'],
                             description=request.form['newpost'],
-                            post_time=time.ctime())
+                            post_time=time.ctime(),
+                            poster=login_session.get('id'))
+            print login_session.get('id')
             session.add(newPost)
             session.commit()
             return redirect(url_for('showProfile', user_id=user_id))
@@ -207,7 +209,7 @@ def showProfile(user_id):
                 file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
                 return redirect(url_for('addPic', user_id=user.id, picture_id=newPicture.id))
     else:
-        posts = session.query(Posts).filter_by(user_id=user_id).order_by(desc(Posts.id)).all()
+        posts = session.query(Posts, User).filter(Posts.user_id==user_id, Posts.poster==User.id).order_by(desc(Posts.id)).all()
         pictures = session.query(Pictures).filter_by(user_id=user_id).all()
         connections = session.query(Connections, User).filter(Connections.user_id==user_id, User.id==Connections.connected_to).all()
         #if login_session.get('id') == user_id:

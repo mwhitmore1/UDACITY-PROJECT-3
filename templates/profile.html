@@ -8,6 +8,19 @@
 		<link href='https://fonts.googleapis.com/css?family=Condiment|Chango|Shojumaru&subset=latin,latin-ext' rel='stylesheet' type='text/css'>
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
 		<script>
+			function upDown(buttonId, buttonVal, element){
+				$(buttonId).click(function(){
+					if ($(buttonId).attr('value') == 'Hide'){
+						$(element).slideUp();
+						$(buttonId).attr('value', buttonVal);
+					}
+					else{
+						$(element).slideDown();
+						$(buttonId).attr('value', 'Hide');
+					}
+				});
+			}
+
 			$(document).ready(function(){
 				$('#loadpic').change(function(){
 					if ($(this).val())
@@ -15,7 +28,11 @@
 					else
 						$('#submitpic').attr('disabled', true)
 				})
+				$('#postform').hide();
+				$('#descbox').hide();
 			});
+			
+
 		</script>
 	</head>
 	<body>
@@ -88,7 +105,7 @@
 							{{user.description}} </br>
 							{% endif %}
 							</br>
-							<div class='formbox'>
+							<div class='formbox' id='descbox'>
 								<h1>Edit Description</h1>
 								<form action='' method='POST' enctype='multipart/form-data'>
 									<textarea type='text' name='editdescription' style="height:200px; width:100%"></textarea>
@@ -97,20 +114,17 @@
 								</form>
 								</br>
 							</div>
+							<div class='row, centertext'>
+								<input id='showadddesc' type='button' value='Edit Description' class='addbutton'>
+								<script>
+									upDown('#showadddesc', 'Edit Description', '#descbox');
+								</script>
+							</div>
+							
 						</div>
 						
 						<div id='posts'>
-						{% for i in posts %}
-							<div class='time'>{{i.post_time}}</div>
-							{% if i.subject %}
-							<h3>{{i.subject}}</h3>							
-							{% endif %}
-							{% if i.description %}
-								{{i.description}} </br></br>
-							{% endif %}
-							</br>
-						{% endfor %}
-							<div class='formbox'>
+							<div class='formbox' id='postform'>
 								<h1>Add Post</h1>
 								<form action='' method='POST' enctype='multipart/form-data'>
 									Subject:
@@ -122,6 +136,32 @@
 									</br>
 									<input type='submit' value='Post'>
 								</form>
+								</br>
+							</div>
+							<div class='row, centertext'>
+								<input id='showaddpost' type='button' value='Add Post' class='addbutton'>
+								<script>
+									upDown('#showaddpost','Add Post','#postform')
+								</script>
+							</div>
+							<div id='posted' class='row'>
+							{% for i in posts %}
+								<a href={{url_for('showProfile', user_id=i[1].id)}} class='col-md-3'>
+									<img src={{url_for('static', filename='images/'+i[1].profile_pic)}} class='posterpic'>
+								</a>
+								<div id='postcontent' class='col-md-8'>
+									<div class='time'>{{i[0].post_time}}</div>
+									{% if i[0].subject %}
+									<h3>{{i[0].subject}}</h3>		
+									{% endif %}
+									<a href={{url_for('showProfile', user_id=i[1].id)}} class='col-md-3' style='font-weight:bold;'>
+									{{i[1].username}}</a><b> posted: </b>
+									{% if i[0].description %}
+										{{i[0].description}} </br></br>
+									{% endif %}
+									</br>
+									{% endfor %}
+								</div>
 							</div>
 						</div>
 
