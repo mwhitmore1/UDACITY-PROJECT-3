@@ -2,7 +2,7 @@
 <html>
 	<head>
 		<link rel='stylesheet' href={{url_for('static', filename='style/style.css')}}>
-		<link href='https://fonts.googleapis.com/css?family=Condiment|Chango|>hojumaru&subset=latin,latin-ext' rel='stylesheet' type='text/css'>
+		<link href='https://fonts.googleapis.com/css?family=Condiment|Chango|Shojumaru&subset=latin,latin-ext' rel='stylesheet' type='text/css'>
 		<title>
 			View Connections
 		</title>
@@ -18,6 +18,8 @@
 					<div class='col-md-6' style='padding-top:25px'>
 							
 							<div class='textright'>
+								<a class='link' href={{url_for('ninjas')}}>All Ninjsa</a>
+								<a class='link' href={{url_for('showProfile', user_id=login)}}>Profile</a>
 								<a class='link' href={{url_for('gdisconnect')}}>Log Out</a>
 							</div>
 					</div>
@@ -25,21 +27,23 @@
 				<hr class='row, headerline'>
 			</div>
 			<div class='offset'></div>
-			<div>
-				{{user.username}}'s connections
-			</div>
-		{% if connections %}
-			{% for c in connections %}
-			<div class='connection'>
-				<a href={{url_for('showProfile', user_id=c[1].id)}}>
-					<img src='/static/images/{{c[1].profile_pic}}' height=60 width=60>
-					{{c[1].username}}
-				</a>
-			</div>
-			{% endfor %}
-		{% endif %}
-			<div>
-				<a href={{url_for('showProfile', user_id=user.id)}}>Back to {{user.username}}'s profile</a>
+			<div class='centertext'>
+				<h1 class='bottommargin20'>{{user.username}}'s connections<h1>
+				
+				<div class='row'>
+					{% if connections %}
+					{% for c in connections %}
+					<div class='col-20p'>
+						<a href={{url_for('showProfile', user_id=c[1].id)}}>
+							<img src='/static/images/{{c[1].profile_pic}}' height=100 width=100>
+						</a>
+						<div>
+							{{c[1].username}}
+						</div>
+					</div>
+					{% endfor %}
+					{% endif %}
+				</div>
 			</div>
 		</div>
 	</body>

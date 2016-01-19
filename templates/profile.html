@@ -46,6 +46,8 @@
 					<div class='col-md-6' style='padding-top:25px'>
 							
 							<div class='textright'>
+								<a class='link' href={{url_for('ninjas')}}>All Ninjsa</a>
+								<a class='link' href={{url_for('showProfile', user_id=login)}}>Profile</a>
 								<a class='link' href={{url_for('gdisconnect')}}>Log Out</a>
 							</div>
 					</div>
@@ -63,10 +65,9 @@
 						
 						<div id='connections'>
 							<div class='conbox'>
-								<div class='row-con'>
-									<h1 style='width:310px;'>Connections</h1>
+								<h1>Connections</h1>
 								</div>
-								<div class='row-con'>
+								<div class='row-con, centertext'>
 								{% if connections %}
 									{% for c in connections[:8] %}
 									<div class='col-con'>
@@ -75,24 +76,31 @@
 										</a>
 									</div>
 									{% endfor %}
+									<a class='link' href={{url_for('viewConnections', user_id=user.id, connections=connections)}}>All Connections</a>
+								{% else %}
+									No connections.
 								{% endif %}
-								<a class='link' href={{url_for('viewConnections', user_id=user.id, connections=connections)}}>All Connections</a>
-								</div>
 							</div>
 						</div>
 						
 						<div id='pics'>
 							<div class='conbox'>
 								<h1>Pictures</h1>
+								{% if pictures %}
 								{% for pic in pictures %}
 									<a  href={{url_for('viewPic', user_id=user.id, picture_id=pic.id)}}>
 										<img src={{url_for('static', filename='images/'+pic.location)}} height=60 width=60>
 									</a>
 								{% endfor %}
+								{% else %}
+									<div>No pictures</div>
+								{% endif %}
+								{% if login == user.id %}
 								<form action='' method='POST' enctype='multipart/form-data'>
 									<input id='loadpic'  type='file' name='file'></br>
 									<input id='submitpic' type='submit' value='upload' disabled>
 								</form>
+								{% endif %}
 							</div>
 						</div>
 						
