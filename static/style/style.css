@@ -37,6 +37,10 @@ margin-bottom: -8px;
 margin-bottom: 8px;
 }
 
+.bottommargin20 {
+	margin-bottom:20px;
+}
+
 
 .ninja {
 	font-family: 'Condiment', cursive;
@@ -76,7 +80,7 @@ margin-bottom: 8px;
 
 a:link {
 	text-decoration: none;
-	color: white;
+	color: blue;
 }
 
 a:active {
@@ -127,6 +131,15 @@ h1 {
 	width: 25%;
 }
 
+.col-20p {
+	width:20%;
+	margin-bottom:30px;
+}
+
+.ninjalist {
+	
+}
+
 button {
 	height: 100%;
 	width: 128px;
@@ -166,6 +179,33 @@ h3 {
 	padding-top: 30px;
 }
 
+.picbox {
+	text-align:left;
+	margin-top:10px;
+	margin-bottom:16px;
+}
+
+.posterpic {
+	padding: 20px; 
+	height:100px; 
+	width:100px;
+}
+
+.yesno {
+	border:double;
+	border-color:white;
+}
+
+#confirm {
+	margin:16px;
+}
+
+.addbutton {
+	margin-bottom:24px;
+}
+
 .formbox {
 	padding:20px;
+	padding-bottom:0px;
+	margin-bottom: -22px;
 }

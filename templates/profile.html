@@ -64,19 +64,22 @@
 						<img src='/static/images/{{user.profile_pic}}' width=200 height=200>
 						
 						<div id='connections'>
+							{% if login != user.id %}
+							<form action='' method='POST'>
+								<input name='sendreq' value='Send Friend Request' type='submit'>
+							</form>
+							{% endif %}
 							<div class='conbox'>
 								<h1>Connections</h1>
-								</div>
-								<div class='row-con, centertext'>
 								{% if connections %}
+									<div class='picbox'>
 									{% for c in connections[:8] %}
-									<div class='col-con'>
-										<a href={{url_for('showProfile', user_id=c[1].id)}}>
-											<img src='/static/images/{{c[1].profile_pic}}' height=60 width=60>
-										</a>
-									</div>
+									<a href={{url_for('showProfile', user_id=c[1].id)}}>
+										<img src='/static/images/{{c[1].profile_pic}}' height=60 width=60>
+									</a>
 									{% endfor %}
-									<a class='link' href={{url_for('viewConnections', user_id=user.id, connections=connections)}}>All Connections</a>
+									</div>
+								<a class='link' href={{url_for('viewConnections', user_id=user.id, connections=connections)}}>All Connections</a>
 								{% else %}
 									No connections.
 								{% endif %}
@@ -87,18 +90,20 @@
 							<div class='conbox'>
 								<h1>Pictures</h1>
 								{% if pictures %}
-								{% for pic in pictures %}
-									<a  href={{url_for('viewPic', user_id=user.id, picture_id=pic.id)}}>
-										<img src={{url_for('static', filename='images/'+pic.location)}} height=60 width=60>
-									</a>
-								{% endfor %}
+									<div class='picbox'>
+									{% for pic in pictures %}
+										<a  href={{url_for('viewPic', user_id=user.id, picture_id=pic.id)}}>
+											<img src={{url_for('static', filename='images/' + pic.location)}} height=60 width=60>
+										</a>
+									{% endfor %}
+									</div>
 								{% else %}
-									<div>No pictures</div>
+									<div>No pictures</br></div></br>
 								{% endif %}
 								{% if login == user.id %}
 								<form action='' method='POST' enctype='multipart/form-data'>
 									<input id='loadpic'  type='file' name='file'></br>
-									<input id='submitpic' type='submit' value='upload' disabled>
+									<input id='submitpic' type='submit' value='Upload Picture' disabled>
 								</form>
 								{% endif %}
 							</div>
@@ -113,6 +118,7 @@
 							{{user.description}} </br>
 							{% endif %}
 							</br>
+							{% if login == user.id %}
 							<div class='formbox' id='descbox'>
 								<h1>Edit Description</h1>
 								<form action='' method='POST' enctype='multipart/form-data'>
@@ -128,6 +134,7 @@
 									upDown('#showadddesc', 'Edit Description', '#descbox');
 								</script>
 							</div>
+							{% endif %}
 							
 						</div>
 						
@@ -153,7 +160,7 @@
 								</script>
 							</div>
 							<div id='posted' class='row'>
-							{% for i in posts %}
+								{% for i in posts %}
 								<a href={{url_for('showProfile', user_id=i[1].id)}} class='col-md-3'>
 									<img src={{url_for('static', filename='images/'+i[1].profile_pic)}} class='posterpic'>
 								</a>
@@ -168,11 +175,21 @@
 										{{i[0].description}} </br></br>
 									{% endif %}
 									</br>
-									{% endfor %}
+								</div>
+								{% endfor %}
+							</div>
+						</div>
+						
+						<div id='jsoncontent' class='centertext'>
+							<div class='row'>
+								<div class='col-md-6'>
+									<a href={{url_for('jsonPics', user_id=user.id)}}>Get Picture Data</a>
+								</div>
+								<div class='col-md-6'>
+									<a href={{url_for('jsonPosts', user_id=user.id)}}>Get Posts Data</a>
 								</div>
 							</div>
 						</div>
-
 					</div>
 				</div>
 			</div>

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import os
 import sys
-from sqlalchemy import Column, Integer, String, ForeignKey
+from sqlalchemy import Column, Integer, String, Boolean, ForeignKey
 from sqlalchemy import DateTime, create_engine
 from sqlalchemy.orm import relationship
 from sqlalchemy.ext.declarative import declarative_base
@@ -21,7 +21,7 @@ class User(Base):
     id = Column(Integer, primary_key=True)
     username = Column(String)
     email = Column(String)
-    profile_pic = Column(Integer, default=1)
+    profile_pic = Column(Integer, default='default_ninja.png')
     description = Column(String)
 
 
@@ -30,11 +30,21 @@ class Pictures(Base):
     __tablename__ = 'pictures'
 
     id = Column(Integer, primary_key=True)
-    location = Column(String, default='default_ninja.png')
+    location = Column(String)
     description = Column(String)
     post_time = Column(String)
     user_id = Column(Integer, ForeignKey('user.id'))
     u_id = relationship(User)
+
+    @property
+    def serialize(self):
+        return {
+            'id': self.id,
+            'location': self.location,
+            'description': self.description,
+            'post_time': self.post_time,
+            'user_id': self.user_id
+        }
 
 
 class Posts(Base):
@@ -50,6 +60,17 @@ class Posts(Base):
     poster = Column(Integer, ForeignKey('user.id'))
     p_id = relationship('User', foreign_keys=[poster])
 
+    @property
+    def serialize(self):
+        return {
+            'id': self.id,
+            'subject': self.subject,
+            'description': self.description,
+            'post_time': self.post_time,
+            'user_id': self.user_id,
+            'poster': self.poster
+        }
+
 
 class Connections(Base):
 
@@ -60,6 +81,7 @@ class Connections(Base):
     u_id = relationship('User', foreign_keys=[user_id])
     connected_to = Column(Integer, ForeignKey('user.id'))
     c_to = relationship('User', foreign_keys=[connected_to])
+    connected = Column(Boolean, default=False)
 
 
 engine = create_engine('sqlite:///ninja.db')

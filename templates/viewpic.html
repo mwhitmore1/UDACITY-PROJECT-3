@@ -3,9 +3,49 @@
 	<head>
 		<link rel='stylesheet' href={{url_for('static', filename='style/style.css')}}>
 		<link href='https://fonts.googleapis.com/css?family=Condiment|Chango|Shojumaru&subset=latin,latin-ext' rel='stylesheet' type='text/css'>
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
 		<title>
 			View Picture
 		</title>
+		{% if user.profile_pic == picture.location %}
+		<script>
+			function showYesNo(buttonId,element){
+				$(buttonId).click(function(){
+					alert('Cannot delete a picture\nwhile it is being used as \nyour profile picture.')
+				})
+			}
+		</script>
+		{% else %}
+		<script>
+			function showYesNo(buttonId,element){
+				$(buttonId).click(function(){
+					$(element).slideToggle();
+				});
+			}
+		</script>
+		{% endif %}
+		<script>
+			function upDown(buttonId, buttonVal, element){
+				$(buttonId).click(function(){
+					if ($(buttonId).attr('value') == 'Hide'){
+						$(element).slideUp();
+						$(buttonId).attr('value', buttonVal);
+					}
+					else{
+						$(element).slideDown();
+						$(buttonId).attr('value', 'Hide');
+					}
+				});
+			}
+
+			$(document).ready(function(){
+				$('#descbox').hide();
+				$('#yesno').hide();
+				upDown('#showadddesc', 'Edit Description', '#descbox');
+				showYesNo('#delpic','#yesno')
+				showYesNo('#delno','#yesno')
+			});
+		</script>
 	</head>
 	<body>
 		<div>
@@ -15,13 +55,12 @@
 						<div id='thesocial'>The Social </div>
 						<div class='ninja'>Ninja</div>
 					</div>
-					<div class='col-md-6' style='padding-top:25px'>
-							
-							<div class='textright'>
-								<a class='link' href={{url_for('ninjas')}}>All Ninjsa</a>
-								<a class='link' href={{url_for('showProfile', user_id=login)}}>Profile</a>
-								<a class='link' href={{url_for('gdisconnect')}}>Log Out</a>
-							</div>
+					<div class='col-md-6' style='padding-top:25px'>							
+						<div class='textright'>
+							<a class='link' href={{url_for('ninjas')}}>All Ninjsa</a>
+							<a class='link' href={{url_for('showProfile', user_id=login)}}>Profile</a>
+							<a class='link' href={{url_for('gdisconnect')}}>Log Out</a>
+						</div>
 					</div>
 				</div>
 				<hr class='row, headerline'>
@@ -34,6 +73,57 @@
 					<div class ='col-md-6'>
 						<div class='time' style='margin-top:20px; margin-bottom:10px;'>Picture posted: {{picture.post_time}}</div>
 						{{picture.description}}
+						
+						{% if login == picture.user_id %}
+						<div class='formbox' id='descbox'>
+							<h1>Edit Description</h1>
+							<form action='' method='POST' enctype='multipart/form-data'>
+								<textarea type='text' name='editdescription' style="height:200px; width:100%"></textarea>
+								</br>
+								<input type='submit' value='Submit'>
+							</form>
+							</br>
+						</div>
+						<div class='row, centertext' style='padding:20px;'>
+							<div>
+								<form action='' method='POST' enctype='multipart/form-data'>
+									<input  name='propic' type='submit' value='Use as Profile Pic'>
+								</form>
+								</br>
+								<input id='showadddesc' type='button' value='Edit Description' class='addbutton'>
+								<input id='delpic' type='button' value='Delete Picture' class='addbutton'>
+							</div>
+						</div>
+						<div class='centertext' id='yesno'>
+							<div class='row'>
+								<div class='col-md-3'></div>
+									<div class='col-md-6'>
+										<div class='yesno'>
+											<div id='confirm'>
+												Delete this picture?
+											</div>
+											<div class='row'>
+												<div class='col-md-6'>
+													<form  method='POST' enctype='multipart/form-data' ACTION=''> 
+														<input name='delyes'  type='submit' value='Yes' class='addbutton'>
+													</form>
+												</div>
+												<div class='col-md-6'>
+													<input id='delno' type='button' value='No' class='addbutton'>
+												</div>
+											</div>
+										</div>
+									</div>
+								<div class='col-md-3'></div>
+							</div>
+						</div>
+						{% else %}
+						<div class='centertext'>
+							</br>
+							<a href={{url_for('showProfile', user_id=picture.user_id)}}>Go back to {{user.username}}'s profile</a>
+						</div>
+						{% endif %}
+						
 					</div>
 					<div class='col-md-3'></div>
 				</div>

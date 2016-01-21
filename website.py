@@ -151,13 +151,27 @@ def newAccount():
 @app.route('/ninjas')
 def ninjas():
     ninjas = session.query(User).all()
-    return render_template('ninjas.html', ninjas=ninjas)
+    return render_template('ninjas.html', ninjas=ninjas, login=login_session['id'])
 
 
-@app.route('/profile/<int:user_id>/pi/<int:picture_id>', methods=['GET', 'POST'])
+@app.route('/profile/<int:user_id>/pic/<int:picture_id>', methods=['GET', 'POST'])
 def viewPic(user_id, picture_id):
     picture = session.query(Pictures).filter_by(id=picture_id).one()
-    return render_template('viewpic.html', picture=picture)
+    user = session.query(User).filter_by(id=user_id).one()
+    if request.method == 'POST':
+        print request.form.items()
+        if request.form.get('editdescription'):
+            picture.description = request.form['editdescription']
+            return redirect(url_for('viewPic', user_id=user_id, picture_id=picture_id))
+        if request.form.get('delyes'):
+            session.delete(picture)
+            session.commit()
+            return redirect(url_for('showProfile', user_id=user_id))
+        if request.form.get('propic'):
+            print 'profile pic changed'
+            user.profile_pic = picture.location
+            return redirect(url_for('showProfile', user_id=user_id))
+    return render_template('viewpic.html', user=user, picture=picture, login=login_session['id'])
 
 
 @app.route('/profile/<int:user_id>/add_pic/<int:picture_id>', methods=['GET', 'POST'])
@@ -173,14 +187,22 @@ def addPic(user_id, picture_id):
         picture.description = picDescr
         return redirect(url_for('showProfile', user_id=user_id))
     else:
-        return render_template('addpic.html', user=user, picture=picture)
+        return render_template('addpic.html', user=user, picture=picture, login=login_session['id'])
 
 
 @app.route('/profile/<int:user_id>/connections/')
 def viewConnections(user_id):
     user = session.query(User).filter_by(id=user_id).one()
     connections = session.query(Connections, User).filter(Connections.user_id==user_id, User.id==Connections.connected_to).all()
-    return render_template('viewcon.html', user=user, connections=connections)
+    return render_template('viewcon.html', user=user, connections=connections, login=login_session['id'])
+
+
+@app.route('/profile/<int:user_id>/requests/')
+def viewRequests(user_id):
+    user = session.query(User).filter_by(id=user_id).one()
+    connections = session.query(Connections, User).filter(Connections.connected_to==user.id, Connections.user_id !=user_id, Connections.connected==False).all()
+    return render_template('viewcon.html', user=user, connections=connections, login=login_session['id'])
+
 
 @app.route('/profile/<int:user_id>/', methods=['GET', 'POST'])
 def showProfile(user_id):
@@ -222,10 +244,24 @@ def showProfile(user_id):
         for pic in pictures:
             print pic.id, pic.location
         return render_template('profile.html',
-                                   user=user,
-                                   posts=posts,
-                                   connections=connections,
-                                   pictures=pictures)
+                               user=user,
+                               posts=posts,
+                               connections=connections,
+                               pictures=pictures,
+                               login=login_session['id'])
+
+
+@app.route('/profile/<int:user_id>/json_pics')
+def jsonPics(user_id):
+    pictures = session.query(Pictures).filter_by(user_id=user_id).all()
+    return jsonify(Pictures=[i.serialize for i in pictures])
+
+
+@app.route('/profile/<int:user_id>/json_posts')
+def jsonPosts(user_id):
+    posts = session.query(Posts).filter_by(user_id=user_id).all()
+    return jsonify(Posts=[i.serialize for i in posts])
+
 
 if __name__ == '__main__':
     app.secret_key = 'super secret key'
