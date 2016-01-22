@@ -197,11 +197,34 @@ def viewConnections(user_id):
     return render_template('viewcon.html', user=user, connections=connections, login=login_session['id'])
 
 
-@app.route('/profile/<int:user_id>/requests/')
+@app.route('/profile/<int:user_id>/requests/', methods=['GET', 'POST'])
 def viewRequests(user_id):
+    if login_session['id'] != user_id:
+        return redirect(url_for('showProfile', user_id=user_id))
     user = session.query(User).filter_by(id=user_id).one()
-    connections = session.query(Connections, User).filter(Connections.connected_to==user.id, Connections.user_id !=user_id, Connections.connected==False).all()
-    return render_template('viewcon.html', user=user, connections=connections, login=login_session['id'])
+    connections = session.query(Connections, User)\
+        .filter(Connections.user_id == User.id,
+                Connections.connected_to == user_id,
+                Connections.connected==False).all()
+    if request.method == 'POST':
+        print request.form.items()
+        if request.form.get('accept'):
+            acceptIndex = int(request.form['index'])
+            accCon = session.query(Connections).filter_by(id=acceptIndex).one()
+            accCon.connected = True
+            newCon = Connections(user_id=user_id,
+                                 connected_to=acceptIndex,
+                                 connected=True)
+            session.add(newCon)
+            session.commit()
+            return redirect(url_for('viewRequests', user_id=user_id))
+        if request.form.get('decline'):
+            deleteIndex = int(request.form['index'])
+            delCon = session.query(Connections).filter_by(id=deleteIndex).one()
+            session.delete(delCon)
+            session.commit()
+            return redirect(url_for('viewRequests', user_id=user_id))
+    return render_template('viewreq.html', user=user, connections=connections, login=login_session['id'])
 
 
 @app.route('/profile/<int:user_id>/', methods=['GET', 'POST'])
@@ -239,7 +262,7 @@ def showProfile(user_id):
     else:
         posts = session.query(Posts, User).filter(Posts.user_id==user_id, Posts.poster==User.id).order_by(desc(Posts.id)).all()
         pictures = session.query(Pictures).filter_by(user_id=user_id).all()
-        connections = session.query(Connections, User).filter(Connections.user_id==user_id, User.id==Connections.connected_to).all()
+        connections = session.query(Connections, User).filter(Connections.connected==True, Connections.user_id==user_id, User.id==Connections.connected_to).all()
         #if login_session.get('id') == user_id:
         for pic in pictures:
             print pic.id, pic.location
