@@ -8,6 +8,7 @@
 		<link href='https://fonts.googleapis.com/css?family=Condiment|Chango|Shojumaru&subset=latin,latin-ext' rel='stylesheet' type='text/css'>
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
 		<script>
+			// Function to make elements slide up or down.
 			function upDown(buttonId, buttonVal, element){
 				$(buttonId).click(function(){
 					if ($(buttonId).attr('value') == 'Hide'){
@@ -20,7 +21,8 @@
 					}
 				});
 			}
-
+			// Box to add descriptions and box to add post will slide into view when
+			// the corresponding button is pressed.
 			$(document).ready(function(){
 				$('#loadpic').change(function(){
 					if ($(this).val())
@@ -61,14 +63,37 @@
 					<div class='offset'></div>
 				</div>
 				<div class='row'>
+					<div class = 'flash'>
+						{% with messages = get_flashed_messages() %}
+						{% if messages %}
+						<ul>
+							{% for message in messages %}
+							<li> <strong> {{ message }} </strong> </li>
+							{% endfor %}
+						</ul>
+						{% endif %}
+						{% endwith %}
+					</div>
+				</div>
+				<div class='row'>
 					<div class='col-md-4' style='text-align:center;'>
 						<img src='/static/images/{{user.profile_pic}}' width=200 height=200>
 						
 						<div id='connections'>
 							{% if login != user.id %}
+								{% if requestSent == 0 %}
 							<form action='' method='POST'>
 								<input name='sendreq' value='Send Friend Request' type='submit'>
 							</form>
+								{% elif requestSent == 1 %}
+							<div>
+								Request Sent...
+							</div>
+								{% elif requestSent == 2 %}
+							<div>
+								Connected
+							</div>
+								{% endif %}
 							{% endif %}
 							<div class='conbox'>
 								<h1>Connections</h1>
