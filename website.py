@@ -39,8 +39,14 @@ APPLICATION_NAME = 'The Social Ninja'
 
 
 def allowed_file(filename):
-    # will return true if the filename contains a period and has an extension
-    # to the right of the period that is in the ALLOWED_EXTENSIONS list.
+
+    """
+    Check if the input file is suppored.
+    :param filename: (string) the name of the uploaded file.
+    :return:will return true if the filename contains a period and has an
+    extension to the right of the period that is in the ALLOWED_EXTENSIONS list.
+    """
+
     return '.' in filename and filename.rsplit('.', 1)[1]\
     in ALLOWED_EXTENSIONS
 
@@ -449,6 +455,14 @@ def showProfile(user_id):
 
 @app.route('/profile/<int:user_id>/json_pics')
 def jsonPics(user_id):
+
+    """
+    Returns a JSON object containing data on each image owned by the target
+    user.
+    :params user_id: id (integer) of the target user
+    :return: JSON object containing data on each image owned by the target
+    """
+
     if login_session.get('username') == ''\
             or login_session.get('id') is None:
         flash('You must be logged in to view content.')
@@ -459,6 +473,15 @@ def jsonPics(user_id):
 
 @app.route('/profile/<int:user_id>/json_posts')
 def jsonPosts(user_id):
+
+    """
+    Returns a JSON object containing data on each post on the target user's
+    page.
+    :params user_id: id (integer) of the target user
+    :return: JSON object containing data on each post on the target user's
+    page.
+    """
+
     if login_session.get('username') == ''\
             or login_session.get('id') is None:
         flash('You must be logged in to view content.')
