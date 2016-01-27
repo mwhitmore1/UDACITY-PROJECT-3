@@ -1,0 +1,1 @@
+python db_setup.py; python db_populate.py; python website.py;
