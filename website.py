@@ -167,7 +167,7 @@ def gconnect():
 def gdisconnect():
     # Send to login if user is not logged in.
     if login_session.get('username') == ''\
-            or login_ssssion.get('id') is None:
+            or login_session.get('id') is None:
         flash('You must be logged in to view content.')
         return redirect(url_for('showLogin'))
     access_token = login_session['credentials']
@@ -213,7 +213,7 @@ def newAccount():
 @app.route('/ninjas')
 def ninjas():
     if login_session.get('username') == ''\
-            or login_ssssion.get('id') is None:
+            or login_session.get('id') is None:
         flash('You must be logged in to view content.')
         return redirect(url_for('showLogin'))
     ninjas = session.query(User).all()
@@ -226,7 +226,7 @@ def ninjas():
            methods=['GET', 'POST'])
 def viewPic(user_id, picture_id):
     if login_session.get('username') == ''\
-            or login_ssssion.get('id') is None:
+            or login_session.get('id') is None:
         flash('You must be logged in to view content.')
         return redirect(url_for('showLogin'))
     picture = session.query(Pictures).filter_by(id=picture_id).one()
@@ -259,7 +259,7 @@ def viewPic(user_id, picture_id):
            methods=['GET', 'POST'])
 def addPic(user_id, picture_id):
     if login_session.get('username') == ''\
-            or login_ssssion.get('id') is None:
+            or login_session.get('id') is None:
         flash('You must be logged in to view content.')
         return redirect(url_for('showLogin'))
     # Send any user other thant the owner of the picture back to the owner's
@@ -288,7 +288,7 @@ def addPic(user_id, picture_id):
 @app.route('/profile/<int:user_id>/connections/')
 def viewConnections(user_id):
     if login_session.get('username') == ''\
-            or login_ssssion.get('id') is None:
+            or login_session.get('id') is None:
         flash('You must be logged in to view content.')
         return redirect(url_for('showLogin'))
     user = session.query(User).filter_by(id=user_id).one()
@@ -304,7 +304,7 @@ def viewConnections(user_id):
 @app.route('/profile/<int:user_id>/requests/', methods=['GET', 'POST'])
 def viewRequests(user_id):
     if login_session.get('username') == ''\
-            or login_ssssion.get('id') is None:
+            or login_session.get('id') is None:
         flash('You must be logged in to view content.')
         return redirect(url_for('showLogin'))
     # Send any user other thant the owner of the picture back to the owner's
@@ -346,7 +346,7 @@ def viewRequests(user_id):
 @app.route('/profile/<int:user_id>/', methods=['GET', 'POST'])
 def showProfile(user_id):
     if login_session.get('username') == ''\
-            or login_ssssion.get('id') is None:
+            or login_session.get('id') is None:
         flash('You must be logged in to view content.')
         return redirect(url_for('showLogin'))
     user = session.query(User).filter_by(id=user_id).one()
@@ -361,10 +361,12 @@ def showProfile(user_id):
             print login_session.get('id')
             session.add(newPost)
             session.commit()
+            flash('You have posted a message on %s\'s page.' % user.username)
             return redirect(url_for('showProfile', user_id=user_id))
         # Edit user description.
         if request.form.get('editdescription'):
             user.description = request.form['editdescription']
+            flash('Your profile description has been edited.')
             return redirect(url_for('showProfile', user_id=user_id))
         # Send a friend request.
         if request.form.get('sendreq'):
@@ -439,7 +441,7 @@ def showProfile(user_id):
 @app.route('/profile/<int:user_id>/json_pics')
 def jsonPics(user_id):
     if login_session.get('username') == ''\
-            or login_ssssion.get('id') is None:
+            or login_session.get('id') is None:
         flash('You must be logged in to view content.')
         return redirect(url_for('showLogin'))
     pictures = session.query(Pictures).filter_by(user_id=user_id).all()
@@ -449,7 +451,7 @@ def jsonPics(user_id):
 @app.route('/profile/<int:user_id>/json_posts')
 def jsonPosts(user_id):
     if login_session.get('username') == ''\
-            or login_ssssion.get('id') is None:
+            or login_session.get('id') is None:
         flash('You must be logged in to view content.')
         return redirect(url_for('showLogin'))
     posts = session.query(Posts).filter_by(user_id=user_id).all()
