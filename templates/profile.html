@@ -199,6 +199,12 @@
 									{{i[1].username}}</a><b> posted: </b>
 									{% if i[0].description %}
 										{{i[0].description}} </br></br>
+										{% if login == i[0].user_id %}
+									<form method='POST' action=''>
+										<input name='delpost'  type='submit' value='Delete Post'>
+										<input type='hidden' name='index' value={{i[0].id}}>
+									</form>
+										{% endif %}
 									{% endif %}
 									</br>
 								</div>

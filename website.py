@@ -45,6 +45,7 @@ def allowed_file(filename):
     in ALLOWED_EXTENSIONS
 
 
+@app.route('/')
 @app.route('/login/')
 def showLogin():
     state = ''.join(random.choice(string.ascii_uppercase + string.digits) \
@@ -113,7 +114,8 @@ def gconnect():
     # Check to see if user is already logged in.
     if stored_credentials and stored_gplus_id == gplus_id:
         try:
-            user = session.query(User).filter_by(email=login_session['email']).one()
+            user = session.query(User).\
+                filter_by(email=login_session['email']).one()
             # Raise an exception if user has no name to avoid users returning
             # to the new account page once they have created an account.
             if user.username == '':
@@ -230,7 +232,7 @@ def viewPic(user_id, picture_id):
         flash('You must be logged in to view content.')
         return redirect(url_for('showLogin'))
     picture = session.query(Pictures).filter_by(id=picture_id).one()
-    user = session.query(User).filter_by(id=user_id).one()
+    user = session.query(User).get(user_id)
     if request.method == 'POST':
         # Edit picture description.
         if request.form.get('editdescription'):
@@ -267,7 +269,7 @@ def addPic(user_id, picture_id):
     if login_session['id'] != user_id:
         return redirect(url_for('showProfile', user_id=user_id))
     picture = session.query(Pictures).filter_by(id=picture_id).one()
-    user = session.query(User).filter_by(id=user_id).one()
+    user = session.query(User).get(user_id)
     if request.method == 'POST':
         # Delte picture if user presses 'cancel'
         if request.form.get('cancel'):
@@ -291,7 +293,7 @@ def viewConnections(user_id):
             or login_session.get('id') is None:
         flash('You must be logged in to view content.')
         return redirect(url_for('showLogin'))
-    user = session.query(User).filter_by(id=user_id).one()
+    user = session.query(User).get(user_id)
     connections = session.query(Connections, User)\
         .filter(Connections.user_id==user_id,
                 User.id==Connections.connected_to).all()
@@ -311,7 +313,7 @@ def viewRequests(user_id):
     # profile page.
     if login_session['id'] != user_id:
         return redirect(url_for('showProfile', user_id=user_id))
-    user = session.query(User).filter_by(id=user_id).one()
+    user = session.query(User).get(user_id)
     # List all users who have sent user a friend request.
     connections = session.query(Connections, User)\
         .filter(Connections.user_id == User.id,
@@ -349,7 +351,7 @@ def showProfile(user_id):
             or login_session.get('id') is None:
         flash('You must be logged in to view content.')
         return redirect(url_for('showLogin'))
-    user = session.query(User).filter_by(id=user_id).one()
+    user = session.query(User).get(user_id)
     if request.method == 'POST':
         # Add a new post.
         if request.form.get('newpost'):
@@ -367,6 +369,13 @@ def showProfile(user_id):
         if request.form.get('editdescription'):
             user.description = request.form['editdescription']
             flash('Your profile description has been edited.')
+            return redirect(url_for('showProfile', user_id=user_id))
+        # delete a post.
+        if request.form.get('delpost'):
+            post_id = request.form.get('index')
+            post = session.query(Posts).get(post_id)
+            session.delete(post)
+            session.commit()
             return redirect(url_for('showProfile', user_id=user_id))
         # Send a friend request.
         if request.form.get('sendreq'):
