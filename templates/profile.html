@@ -84,6 +84,7 @@
 								{% if requestSent == 0 %}
 							<form action='' method='POST'>
 								<input name='sendreq' value='Send Friend Request' type='submit'>
+								<input type='hidden' name='_csrf_token' value='{{ csrf_token() }}'>
 							</form>
 								{% elif requestSent == 1 %}
 							<div>
@@ -130,6 +131,7 @@
 								<form action='' method='POST' enctype='multipart/form-data'>
 									<input id='loadpic'  type='file' name='file'></br>
 									<input id='submitpic' type='submit' value='Upload Picture' disabled>
+									<input type='hidden' name='_csrf_token' value='{{ csrf_token() }}'>
 								</form>
 								{% endif %}
 							</div>
@@ -151,6 +153,7 @@
 									<textarea type='text' name='editdescription' style="height:200px; width:100%"></textarea>
 									</br>
 									<input type='submit' value='Submit'>
+									<input type='hidden' name='_csrf_token' value='{{ csrf_token() }}'>
 								</form>
 								</br>
 							</div>
@@ -176,6 +179,7 @@
 									<textarea type='text' name='newpost' style="height:200px; width:100%"></textarea>
 									</br>
 									<input type='submit' value='Post'>
+									<input type='hidden' name='_csrf_token' value='{{ csrf_token() }}'>
 								</form>
 								</br>
 							</div>
@@ -203,6 +207,7 @@
 									<form method='POST' action=''>
 										<input name='delpost'  type='submit' value='Delete Post'>
 										<input type='hidden' name='index' value={{i[0].id}}>
+										<input type='hidden' name='_csrf_token' value='{{ csrf_token() }}'>
 									</form>
 										{% endif %}
 									{% endif %}

@@ -31,6 +31,7 @@
 				</h1>
 				<div>
 					<form method='POST' id='newun'>
+						<input type='hidden' name='_csrf_token' value='{{ csrf_token() }}'>
 						<div class='field'>
 							<div class='row, centertext'><h2>Enter Username:</h2></div>
 							<div class='row, centertext'><input type='text' name='newname' required></br></div>
