@@ -5,7 +5,7 @@ import string
 import httplib2
 import requests
 
-from db_setup import Base, User, Posts, Pictures, Connections
+from db_setup import Base, Users, Posts, Pictures, Connections, engine
 
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy import create_engine, desc
@@ -19,21 +19,25 @@ from flask import Flask, request, render_template, redirect, jsonify, \
                   url_for, flash, json, make_response
 
 from flask import session as login_session
+from flask.ext.seasurf import SeaSurf
 
 
 UPLOAD_FOLDER = 'static/images'
 ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jqeg', 'gif'])
+FILE_PATH = '/var/www/'
 
 app = Flask(__name__)
+print SeaSurf(app)
+csrf = SeaSurf(app)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
-engine = create_engine('sqlite:///ninja.db')
 Base.metadata.bind = engine
 DBSession = sessionmaker(bind=engine)
 session = DBSession()
 
 # Get client ID from client_secrets file.
-CLIENT_ID = json.loads(open('client_secrets.json', 'r').read())['web']\
+CLIENT_ID = json.loads(open(
+    FILE_PATH + 'client_secrets.json', 'r').read())['web']\
     ['client_id']
 APPLICATION_NAME = 'The Social Ninja'
 
@@ -70,14 +74,15 @@ def logout():
 def gconnect():
     # Check if the stat token in the user request is the same as the state code
     # on the server.
+    print 'gconnect begins'
     if request.args.get('state') != login_session['state']:
         response = make_response(json.dumps('Invalid state parameter.'), 401)
         response.headers['Content-Type'] = 'application/json'
         return response
     code = request.data.decode('utf-8')
-    print request.data.decode('utf-8')
+    print 'Request decode:', request.data.decode('utf-8')
     try:
-        oauth_flow = flow_from_clientsecrets('client_secrets.json', scope='')
+        oauth_flow = flow_from_clientsecrets(FILE_PATH + 'client_secrets.json', scope='')
         print 'Flow object created from client_secrets file'
         oauth_flow.redirect_uri = 'postmessage'
         credentials = oauth_flow.step2_exchange(code)
@@ -120,7 +125,7 @@ def gconnect():
     # Check to see if user is already logged in.
     if stored_credentials and stored_gplus_id == gplus_id:
         try:
-            user = session.query(User).\
+            user = session.query(Users).\
                 filter_by(email=login_session['email']).one()
             # Raise an exception if user has no name to avoid users returning
             # to the new account page once they have created an account.
@@ -142,7 +147,7 @@ def gconnect():
     login_session['email'] = data['email']
     # Check if user has an existing account.
     try:
-        user = session.query(User).filter_by(email=login_session['email']).one()
+        user = session.query(Users).filter_by(email=login_session['email']).one()
         # Delete user if no username is specified to avoid visits to the create
         # account page after user has already created an account.
         if user.username == '':
@@ -162,7 +167,7 @@ def gconnect():
         response = make_response(json.dumps(
             {'user': None}), 200)
         response.headers['Content-Type'] = 'application/json'
-        user = User(username='', email=login_session['email'])
+        user = Users(username='', email=login_session['email'])
         session.add(user)
         session.commit()
         # Set login session variables.
@@ -181,7 +186,7 @@ def gdisconnect():
     access_token = login_session['credentials']
     # Send the client an error if the user is not logged in.
     if access_token is None:
-        response = make_response(json.dumps('User not logged in.'), 401)
+        response = make_response(json.dumps('Users not logged in.'), 401)
         response.headers['Content-Type'] = 'application/json'
         return response
     url = 'https://accounts.google.com/o/oauth2/revoke?token=%s' % access_token
@@ -208,7 +213,7 @@ def newAccount():
     if login_session.get('id') is None:
         flash('You must be logged in to view content.')
         return redirect(url_for('showLogin'))
-    user = session.query(User).filter_by(id=login_session['id']).one()
+    user = session.query(Users).filter_by(id=login_session['id']).one()
     if request.method == 'POST':
         # Update user''s username.
         user.username=request.form['newname']
@@ -224,7 +229,7 @@ def ninjas():
             or login_session.get('id') is None:
         flash('You must be logged in to view content.')
         return redirect(url_for('showLogin'))
-    ninjas = session.query(User).all()
+    ninjas = session.query(Users).all()
     return render_template('ninjas.html',
                            ninjas=ninjas,
                            login=login_session['id'])
@@ -238,7 +243,7 @@ def viewPic(user_id, picture_id):
         flash('You must be logged in to view content.')
         return redirect(url_for('showLogin'))
     picture = session.query(Pictures).filter_by(id=picture_id).one()
-    user = session.query(User).get(user_id)
+    user = session.query(Users).get(user_id)
     if request.method == 'POST':
         # Edit picture description.
         if request.form.get('editdescription'):
@@ -275,7 +280,7 @@ def addPic(user_id, picture_id):
     if login_session['id'] != user_id:
         return redirect(url_for('showProfile', user_id=user_id))
     picture = session.query(Pictures).filter_by(id=picture_id).one()
-    user = session.query(User).get(user_id)
+    user = session.query(Users).get(user_id)
     if request.method == 'POST':
         # Delte picture if user presses 'cancel'
         if request.form.get('cancel'):
@@ -299,10 +304,10 @@ def viewConnections(user_id):
             or login_session.get('id') is None:
         flash('You must be logged in to view content.')
         return redirect(url_for('showLogin'))
-    user = session.query(User).get(user_id)
-    connections = session.query(Connections, User)\
+    user = session.query(Users).get(user_id)
+    connections = session.query(Connections, Users)\
         .filter(Connections.user_id==user_id,
-                User.id==Connections.connected_to).all()
+                Users.id==Connections.connected_to).all()
     return render_template('viewcon.html',
                            user=user,
                            connections=connections,
@@ -319,10 +324,10 @@ def viewRequests(user_id):
     # profile page.
     if login_session['id'] != user_id:
         return redirect(url_for('showProfile', user_id=user_id))
-    user = session.query(User).get(user_id)
+    user = session.query(Users).get(user_id)
     # List all users who have sent user a friend request.
-    connections = session.query(Connections, User)\
-        .filter(Connections.user_id == User.id,
+    connections = session.query(Connections, Users)\
+        .filter(Connections.user_id == Users.id,
                 Connections.connected_to == user_id,
                 Connections.connected==False).all()
     if request.method == 'POST':
@@ -357,7 +362,7 @@ def showProfile(user_id):
             or login_session.get('id') is None:
         flash('You must be logged in to view content.')
         return redirect(url_for('showLogin'))
-    user = session.query(User).get(user_id)
+    user = session.query(Users).get(user_id)
     if request.method == 'POST':
         # Add a new post.
         if request.form.get('newpost'):
@@ -418,14 +423,14 @@ def showProfile(user_id):
                                         user_id=user.id,
                                         picture_id=newPicture.id))
     else:
-        posts = session.query(Posts, User)\
+        posts = session.query(Posts, Users)\
             .filter(Posts.user_id==user_id,
-                    Posts.poster==User.id).order_by(desc(Posts.id)).all()
+                    Posts.poster==Users.id).order_by(desc(Posts.id)).all()
         pictures = session.query(Pictures).filter_by(user_id=user_id).all()
-        connections = session.query(Connections, User)\
+        connections = session.query(Connections, Users)\
             .filter(Connections.connected==True,
                     Connections.user_id==user_id,
-                    User.id==Connections.connected_to).all()
+                    Users.id==Connections.connected_to).all()
         try:
         # The followig will determine what is to be displayed where the friend
         # request button usually appears.
@@ -490,7 +495,7 @@ def jsonPosts(user_id):
     return jsonify(Posts=[i.serialize for i in posts])
 
 
-if __name__ == '__main__':
-    app.secret_key = 'super secret key'
-    app.debug = True
-    app.run(host='0.0.0.0', port=5000)
+# if __name__ == '__main__':
+app.secret_key = 'super secret key'
+app.debug = True
+# app.run(host='0.0.0.0', port=8000)
